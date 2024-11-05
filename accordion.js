@@ -11,11 +11,14 @@ export default class Accordion {
     dontUseButtons
   ) {
     const thisClass = this;
+    this.$containerEl = $containerEl;
+    thisClass.$containerEl = $containerEl;
+
     var idGenLen = 30;  
     var idGenPattern = 'aA0'; // default is aA0 it has a chance for lowercased capitals and numbers
 
     $containerEl.addClass('accordion')
-                .attr('data-state', 'closed');
+      .attr('data-state', 'closed');
 
     if( isolatedSibling ) {
       $containerEl.addClass('isolatedSibling');
@@ -33,15 +36,17 @@ export default class Accordion {
       roleType = 'role';
     }
 
-    const btnHTML = `<${elType} ${roleType}="button" class="accordionBtn" data-state="closed" tabindex="0" aria-pressed="false" aria-expanded="false" aria-controls="${contentID}" id="${btnID}" >
+    const HTML_btn = `<${elType} ${roleType}="button" class="accordionBtn" data-state="closed" tabindex="0" aria-pressed="false" aria-expanded="false" aria-controls="${contentID}" id="${btnID}" >
                       <span class="inner"></span>
                     </${elType}>`;
     
     var $btnEl = $containerEl.find(buttonSelector);
-    $btnEl.wrapInner(btnHTML);
+    $btnEl.wrapInner(HTML_btn);
     $btnEl = $btnEl.find('.accordionBtn');
+    this.$btnEl = $btnEl;
 
-    var $contentEl = $containerEl.find(contentSelector);
+    const $contentEl = $containerEl.find(contentSelector);
+    this.$contentEl = $contentEl;
     $contentEl.addClass('accordionContent')
       .attr('id',contentID)
       .attr('aria-labelledby',btnID)
@@ -54,21 +59,19 @@ export default class Accordion {
       const currentState = $btnEl.attr("data-state");
       if( currentState === 'closed' ) {
         // console.log('currentState', currentState);
-        thisClass.changeState('open', $btnEl, $contentEl);
+        thisClass.changeState('open');
       } else {
         // console.log('currentState', currentState);
-        thisClass.changeState('closed', $btnEl, $contentEl);
+        thisClass.changeState('closed');
       }
     });    
 
-    const $checkboxes = $contentEl.find('.form-checkbox');
 
-
-    window.addEventListener('keydown',function(event){
+    window.addEventListener('keydown', function(event){
       // console.log(event);
 
       if( event.key === 'Escape' ) {
-        thisClass.changeState('close', $btnEl, $contentEl);
+        thisClass.changeState('closed');
       }
     });
 
@@ -79,15 +82,15 @@ export default class Accordion {
 
         if( event.key === 'Enter' ) {
           if( $btnEl.attr('data-state') === 'closed' ) {
-            thisClass.changeState('open', $btnEl, $contentEl);
+            thisClass.changeState('open');
           } else {
-            thisClass.changeState('closed', $btnEl, $contentEl);
+            thisClass.changeState('closed');
           }
         } else if( event.keyCode === 32 || event.code === 'Space' ) {
           if( $(this).attr('data-state') === 'closed' ) {
-            thisClass.changeState('open', $btnEl, $contentEl);
+            thisClass.changeState('open');
           } else {
-            thisClass.changeState('closed', $btnEl, $contentEl);
+            thisClass.changeState('closed');
           }
         }
       });
@@ -110,7 +113,7 @@ export default class Accordion {
         $btnEl.find('.inner').append(`<span>(${checkedCount})</span>`);
       }
 
-      const focusableEls = $contentEl[0].querySelectorAll('a, input, .proxyApplyBtn');
+      const focusableEls = $contentEl[0].querySelectorAll('a, button, input, .proxyApplyBtn');
       // console.log('focusableEls',focusableEls);
       const focusableElCount = focusableEls.length;
 
@@ -159,10 +162,12 @@ export default class Accordion {
     }
   }
 
-  changeState(newState, $btnEl, $contentEl) {
+  changeState(newState) {
     // console.log('newState', newState);
     
-    const $containerEl = $btnEl.parents('.accordion');
+    const $containerEl = this.$containerEl;
+    const $contentEl = this.$contentEl;
+    const $btnEl = this.$btnEl;
 
     if(newState == 'open') {
   
