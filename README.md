@@ -17,7 +17,7 @@ export default class Accordion {
   // …
   }
 }
-
+```
 
 
 # Here is an example use case:
@@ -46,3 +46,4 @@ if( $accordionItems.length ) {
 
   });
 }
+```
