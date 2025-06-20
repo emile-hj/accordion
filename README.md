@@ -31,9 +31,6 @@ if( $accordionItems.length ) {
     const HEADING_SELECTOR = ('.accordion-heading');
     const CONTENT_SELECTOR = ('.accordion-content');
 
-    const $heading = $item.find(HEADING_SELECTOR);
-    const $content = $item.find(CONTENT_SELECTOR);
-
     if( $heading.length && $content.length ) {
       const accordion = new Accordion(
         $item,
