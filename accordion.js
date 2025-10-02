@@ -126,6 +126,16 @@ export default class Accordion {
           $openSibling.attr('data-state', 'closed');
         }
       }
+
+      let zIndex = $containerEl.css('z-index');
+      console.log('zIndex is', zIndex);
+      if( zIndex === 'auto' || zIndex === 'initial' || zIndex === 'inherit' || zIndex === 'unset' || zIndex === '0' ) {
+        zIndex = 1;
+      } else {
+        zIndex = Number(zIndex) + 1;
+      }      
+      // console.log('after checks, zIndex is', zIndex);
+      $containerEl.css({'z-index': zIndex});
   
       setTimeout(function(){
         $contentEl.attr('data-state', 'open')
@@ -145,8 +155,12 @@ export default class Accordion {
   
     } else {
       $contentEl.attr('data-state', 'closed')
-        .slideUp(250);
+        .slideUp(250, function(){
+          $containerEl.css({'z-index': ''});
+        });
   
+
+
       $btnEl.attr('data-state', 'closed')
         .attr('aria-pressed', 'false')
         .attr('aria-expanded', 'false');
