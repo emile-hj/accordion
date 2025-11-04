@@ -6,6 +6,7 @@ export default class Accordion {
     $containerEl, 
     buttonSelector, 
     contentSelector,
+    preventLenisScroll,
     isolatedSibling, // only one of these can be open at a time
     dontUseButtons
   ) {
@@ -17,7 +18,7 @@ export default class Accordion {
                 .attr('data-state', 'closed');
 
     if( isolatedSibling ) {
-      $containerEl.addClass('isolatedSibling');
+      $containerEl.addClass('isolated-sibling');
     }   
 
     const btnID = `btn-${randomId(idGenLen, idGenPattern)}`;
@@ -51,7 +52,6 @@ export default class Accordion {
       .attr('aria-labelledby',btnID)
       .attr('data-state', 'closed')
       .attr('tabindex','0')
-      .attr('data-lenis-prevent','true')
       .slideUp(0, function(){
         if( ScrollTrigger ) {
           // console.log('refreshing scrolltrigger from accordion setup');
@@ -59,7 +59,11 @@ export default class Accordion {
         }
       });
 
-      $btnEl.on('click', (event) => {
+    if( preventLenisScroll ) {
+      $contentEl.attr('data-lenis-prevent','true');
+    }
+
+    $btnEl.on('click', (event) => {
       const currentState = $btnEl.attr("data-state");
       if( currentState === 'closed' ) {
         // console.log('currentState', currentState);
@@ -113,9 +117,9 @@ export default class Accordion {
   
       var waitTime = 0;
 
-      if( $containerEl.hasClass('isolatedSibling') ) {
+      if( $containerEl.hasClass('isolated-sibling') ) {
         const $setContainer = $containerEl.parent();
-        const $openSibling = $setContainer.find('.isolatedSibling[data-state="open"]');
+        const $openSibling = $setContainer.find('.isolated-sibling[data-state="open"]');
         if( $openSibling.length && $openSibling != $containerEl ) {
           waitTime = 250;
           const $openSiblingBtn = $openSibling.find('.accordion-btn');
@@ -133,7 +137,7 @@ export default class Accordion {
       }
 
       let zIndex = $containerEl.css('z-index');
-      console.log('zIndex is', zIndex);
+      // console.log('zIndex is', zIndex);
       if( zIndex === 'auto' || zIndex === 'initial' || zIndex === 'inherit' || zIndex === 'unset' || zIndex === '0' ) {
         zIndex = 1;
       } else {
