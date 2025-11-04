@@ -52,7 +52,12 @@ export default class Accordion {
       .attr('data-state', 'closed')
       .attr('tabindex','0')
       .attr('data-lenis-prevent','true')
-      .slideUp(0);
+      .slideUp(0, function(){
+        if( ScrollTrigger ) {
+          // console.log('refreshing scrolltrigger from accordion setup');
+          ScrollTrigger.refresh();
+        }
+      });
 
       $btnEl.on('click', (event) => {
       const currentState = $btnEl.attr("data-state");
@@ -139,11 +144,14 @@ export default class Accordion {
   
       setTimeout(function(){
         $contentEl.attr('data-state', 'open')
-        .slideDown(250,
-          () => {
-            $contentEl.focus();
+        .slideDown(250, function(){
+          $contentEl.focus();
+
+          if( ScrollTrigger ) {
+            // console.log('refreshing scrolltrigger from accordion change state');
+            ScrollTrigger.refresh();
           }
-        );
+        });
   
         $btnEl.attr('data-state', 'open')
           .attr('aria-pressed', 'true')
@@ -157,6 +165,11 @@ export default class Accordion {
       $contentEl.attr('data-state', 'closed')
         .slideUp(250, function(){
           $containerEl.css({'z-index': ''});
+
+          if( ScrollTrigger ) {
+            // console.log('refreshing scrolltrigger from accordion change state');
+            ScrollTrigger.refresh();
+          }
         });
   
 
