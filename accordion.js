@@ -53,7 +53,7 @@ export default class Accordion {
       .attr('data-state', 'closed')
       .attr('tabindex','0')
       .slideUp(0, function(){
-        if( ScrollTrigger ) {
+        if( typeof ScrollTrigger !== 'undefined' ) {
           // console.log('refreshing scrolltrigger from accordion setup');
           ScrollTrigger.refresh();
         }
@@ -151,7 +151,7 @@ export default class Accordion {
         .slideDown(250, function(){
           $contentEl.focus();
 
-          if( ScrollTrigger ) {
+          if( typeof ScrollTrigger !== 'undefined' ) {
             // console.log('refreshing scrolltrigger from accordion change state');
             ScrollTrigger.refresh();
           }
@@ -170,7 +170,7 @@ export default class Accordion {
         .slideUp(250, function(){
           $containerEl.css({'z-index': ''});
 
-          if( ScrollTrigger ) {
+          if( typeof ScrollTrigger !== 'undefined' ) {
             // console.log('refreshing scrolltrigger from accordion change state');
             ScrollTrigger.refresh();
           }
