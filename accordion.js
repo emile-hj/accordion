@@ -64,13 +64,14 @@ export default class Accordion {
     }
 
     $btnEl.on('click', (event) => {
+      const moveFocus = event.detail === 0; // detail is 0 for keyboard-triggered clicks, >0 for mouse
       const currentState = $btnEl.attr("data-state");
       if( currentState === 'closed' ) {
         // console.log('currentState', currentState);
-        thisClass.changeState('open', $btnEl, $contentEl);
+        thisClass.changeState('open', $btnEl, $contentEl, moveFocus);
       } else {
         // console.log('currentState', currentState);
-        thisClass.changeState('closed', $btnEl, $contentEl);
+        thisClass.changeState('closed', $btnEl, $contentEl, moveFocus);
       }
     });    
 
@@ -90,15 +91,15 @@ export default class Accordion {
 
         if( event.key === 'Enter' ) {
           if( $btnEl.attr('data-state') === 'closed' ) {
-            thisClass.changeState('open', $btnEl, $contentEl);
+            thisClass.changeState('open', $btnEl, $contentEl, true);
           } else {
-            thisClass.changeState('closed', $btnEl, $contentEl);
+            thisClass.changeState('closed', $btnEl, $contentEl, true);
           }
         } else if( event.keyCode === 32 || event.code === 'Space' ) {
           if( $(this).attr('data-state') === 'closed' ) {
-            thisClass.changeState('open', $btnEl, $contentEl);
+            thisClass.changeState('open', $btnEl, $contentEl, true);
           } else {
-            thisClass.changeState('closed', $btnEl, $contentEl);
+            thisClass.changeState('closed', $btnEl, $contentEl, true);
           }
         }
       });
@@ -108,7 +109,7 @@ export default class Accordion {
 
   }
 
-  changeState(newState, $btnEl, $contentEl) {
+  changeState(newState, $btnEl, $contentEl, moveFocus = false) {
     // console.log('newState', newState);
     
     const $containerEl = $btnEl.parents('.accordion');
@@ -149,7 +150,9 @@ export default class Accordion {
       setTimeout(function(){
         $contentEl.attr('data-state', 'open')
         .slideDown(250, function(){
-          $contentEl.focus();
+          if( moveFocus ) {
+            $contentEl.focus();
+          }
 
           if( typeof ScrollTrigger !== 'undefined' ) {
             // console.log('refreshing scrolltrigger from accordion change state');
